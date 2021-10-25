@@ -65,7 +65,7 @@ private:
         initQuarterOfShift(4, {6, 10, 15, 21});
 
         for (BYTE i = 0; i < 64; i++)
-            K[i] = floor(0xffffffff * std::abs(sin(i + 1)));
+            K[i] = std::floor(0x100000000 * std::abs(sin(i + 1)));
     }
 
     void fillDataBlock(std::string& data)
@@ -75,7 +75,7 @@ private:
 
         // 448 + 64 == 512 bits
 
-        while (data.size() % 56 == 0) // 56 bytes - 448 bits
+        while (data.size() % 56 != 0) // 56 bytes - 448 bits
             data.push_back(0x00);
 
         for (BYTE i = 0; i < 8; i++) // 8 bytes - 64 bits
