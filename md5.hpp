@@ -70,7 +70,7 @@ private:
 
     void fillDataBlock(std::string& data)
     {
-        data.push_back(0x80);
+        data.push_back(0x01);
         const BLOCK64 originalDataLen = data.length();
 
         // 448 + 64 == 512 bits
@@ -102,7 +102,7 @@ private:
     {
         std::array<BLOCK, 16> block;
         for (BYTE i = 0; i < 16; i++) // 16 - count of mini blocks // 32 - mini block lenght
-            std::copy(strBlock512.begin() + i * 32, strBlock512.begin() + (i + 1) * 32, block.begin());
+            std::copy(strBlock512.begin() + i * 4, strBlock512.begin() + (i + 1) * 4, block.begin() + i);
 
         return block;
     }
@@ -141,11 +141,11 @@ private:
                 g = (7*i) % 16;
             }
 
-            F = F + A + K[i] + block[g];  // M[g] — 32 битный блок
+            F += A + K[i] + block[g];  // M[g] — 32 битный блок
             A = D;
             D = C;
             C = B;
-            B = B + (F << Shifts[i]); // Выполняем битовый сдвиг
+            B += (F << Shifts[i]); // Выполняем битовый сдвиг
         }
 
         a0 = A;
@@ -156,7 +156,7 @@ private:
 
     void calculateHash(const std::string strBlocks)
     {
-        const BLOCK countBlocks = strBlocks.size() % 64; // 512 bits == 64 bytes
+        const BLOCK countBlocks = strBlocks.size() / 64; // 512 bits == 64 bytes
         for (BLOCK i = 0; i < countBlocks; i++)
             calculateBlockHash(strBlocks.substr(i*64, 64)); // get sub str (from start block possition , len == 64)
     }
