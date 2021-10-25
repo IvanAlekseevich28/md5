@@ -11,8 +11,6 @@ int main(int argc, char** argv)
     }
 
     cout << MD5().stringHash(argv[1])<< endl;
-//    BLOCK x(0xffffffff), y (4);
-//    x += y;
-//    cout << x << endl;
+
     return 0;
 }

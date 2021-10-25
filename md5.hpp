@@ -70,8 +70,8 @@ private:
 
     void fillDataBlock(std::string& data)
     {
-        data.push_back(0x01);
-        const BLOCK64 originalDataLen = data.length();
+        const BLOCK64 originalDataLen = data.length() * 8;
+        data.push_back(0x80);
 
         // 448 + 64 == 512 bits
 
@@ -101,9 +101,8 @@ private:
     static std::array<BLOCK, 16> strToArray(const std::string& strBlock512)
     {
         std::array<BLOCK, 16> block;
-        for (BYTE i = 0; i < 16; i++) // 16 - count of mini blocks // 32 - mini block lenght
-            std::copy(strBlock512.begin() + i * 4, strBlock512.begin() + (i + 1) * 4, block.begin() + i);
-
+        for (BYTE i = 0; i < 16; i++) // 16 - count of mini blocks
+            block[i] = (strBlock512[i*4] << 24) | (strBlock512[i*4+1] << 16) | (strBlock512[i*4+2] << 8) | strBlock512[i*4+3];
         return block;
     }
 
